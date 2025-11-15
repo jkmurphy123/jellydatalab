@@ -1,0 +1,34 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// prisma/schema.prisma
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Dataset {
+  id          Int      @id @default(autoincrement())
+  slug        String   @unique
+  title       String
+  description String
+  sourceUrl   String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  records     Record[]
+}
+
+model Record {
+  id         Int      @id @default(autoincrement())
+  datasetId  Int
+  dataset    Dataset  @relation(fields: [datasetId], references: [id])
+  data       Json
+  createdAt  DateTime @default(now())
+
+  @@index([datasetId])
+}
