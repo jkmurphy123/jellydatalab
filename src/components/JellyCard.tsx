@@ -11,16 +11,16 @@ type JellyCardProps = {
 
 export function JellyCard({ title, description, children, className }: JellyCardProps) {
     return (
-        <Card className={className ?? 'bg-slate-900/80 border-slate-800'}>
+        <Card className={className ?? 'bg-card border-border shadow-lg'}>
             {(title || description) && (
                 <CardHeader className="pb-3">
                     {title && (
-                        <CardTitle className="text-sm font-semibold text-slate-50">
+                        <CardTitle className="text-sm font-semibold text-muted-foreground">
                             {title}
                         </CardTitle>
                     )}
                     {description && (
-                        <CardDescription className="text-xs text-slate-400">
+                        <CardDescription className="text-xs text-foreground">
                             {description}
                         </CardDescription>
                     )}

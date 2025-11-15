@@ -133,15 +133,15 @@ export default async function DatasetDetailPage({
         <div className="space-y-6">
             {/* Header / meta */}
             <div className="space-y-2">
-                <p className="text-xs text-slate-400">
+                <p className="text-xs text-foreground">
                     <Link href="/datasets" className="hover:text-emerald-300">
                         ← Back to datasets
                     </Link>
                 </p>
-                <h1 className="text-2xl font-bold text-slate-50">{dataset.title}</h1>
-                <p className="text-sm text-slate-300">{dataset.description}</p>
+                <h1 className="text-2xl font-bold text-muted-foreground">{dataset.title}</h1>
+                <p className="text-sm text-foreground">{dataset.description}</p>
                 {dataset.sourceUrl && (
-                    <p className="text-xs text-slate-400">
+                    <p className="text-xs text-foreground">
                         Source:{' '}
                         <a
                             href={dataset.sourceUrl}

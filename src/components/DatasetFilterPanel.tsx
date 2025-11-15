@@ -68,18 +68,18 @@ export function DatasetFilterPanel({
         <JellyCard
             title="Filters & Sorting"
             description="Refine the records shown below."
-            className="bg-slate-900/80 border-slate-800"
+            className="bg-card border-border"
         >
             <div className="flex flex-wrap items-end gap-4">
                 {/* Year select */}
                 {years.length > 0 && (
                     <div className="flex flex-col gap-1 text-xs">
-                        <span className="text-slate-300">Year</span>
+                        <span className="text-foreground">Year</span>
                         <Select value={year} onValueChange={setYear}>
-                            <SelectTrigger className="h-8 w-[120px] border-slate-700 bg-slate-950 text-xs">
+                            <SelectTrigger className="h-8 w-[120px] border-border bg-background text-xs">
                                 <SelectValue placeholder="All years" />
                             </SelectTrigger>
-                            <SelectContent className="bg-slate-900 text-xs">
+                            <SelectContent className="bg-background text-xs">
                                 <SelectItem value="__all__">All years</SelectItem>
                                 {years.map((yr) => (
                                     <SelectItem key={yr} value={yr.toString()}>
@@ -94,12 +94,12 @@ export function DatasetFilterPanel({
                 {/* State select */}
                 {states.length > 0 && (
                     <div className="flex flex-col gap-1 text-xs">
-                        <span className="text-slate-300">State</span>
+                        <span className="text-foreground">State</span>
                         <Select value={state} onValueChange={setState}>
-                            <SelectTrigger className="h-8 w-[160px] border-slate-700 bg-slate-950 text-xs">
+                            <SelectTrigger className="h-8 w-[120px] border-border bg-background text-xs">
                                 <SelectValue placeholder="All states" />
                             </SelectTrigger>
-                            <SelectContent className="max-h-64 bg-slate-900 text-xs">
+                            <SelectContent className="max-h-64 bg-background text-xs">
                                 <SelectItem value="__all__">All states</SelectItem>
                                 {states.map((st) => (
                                     <SelectItem key={st} value={st}>
@@ -114,12 +114,12 @@ export function DatasetFilterPanel({
                 {/* Sort key */}
                 {sortableKeys.length > 0 && (
                     <div className="flex flex-col gap-1 text-xs">
-                        <span className="text-slate-300">Sort by</span>
+                        <span className="text-foreground">Sort by</span>
                         <Select value={sortKey} onValueChange={setSortKey}>
-                            <SelectTrigger className="h-8 w-[160px] border-slate-700 bg-slate-950 text-xs">
+                            <SelectTrigger className="h-8 w-[120px] border-border bg-background text-xs">
                                 <SelectValue placeholder="(no sorting)" />
                             </SelectTrigger>
-                            <SelectContent className="bg-slate-900 text-xs">
+                            <SelectContent className="bg-background text-xs">
                                 <SelectItem value="__all__">(no sorting)</SelectItem>
                                 {sortableKeys.map((key) => (
                                     <SelectItem key={key} value={key}>
@@ -133,15 +133,15 @@ export function DatasetFilterPanel({
 
                 {/* Sort direction */}
                 <div className="flex flex-col gap-1 text-xs">
-                    <span className="text-slate-300">Direction</span>
+                    <span className="text-foreground">Direction</span>
                     <Select
                         value={sortDir}
                         onValueChange={(val: 'asc' | 'desc') => setSortDir(val)}
                     >
-                        <SelectTrigger className="h-8 w-[120px] border-slate-700 bg-slate-950 text-xs">
+                        <SelectTrigger className="h-8 w-[120px] border-border bg-background text-xs">
                             <SelectValue />
                         </SelectTrigger>
-                        <SelectContent className="bg-slate-900 text-xs">
+                        <SelectContent className="bg-background text-xs">
                             <SelectItem value="asc">Ascending</SelectItem>
                             <SelectItem value="desc">Descending</SelectItem>
                         </SelectContent>
@@ -153,7 +153,7 @@ export function DatasetFilterPanel({
                     <Button
                         type="button"
                         size="sm"
-                        className="h-8 rounded-full bg-emerald-500 text-xs font-semibold text-slate-950 hover:bg-emerald-400"
+                        className="h-8 rounded-full bg-primary text-xs font-semibold text-primary-foreground hover:bg-primary"
                         onClick={applyFilters}
                     >
                         Apply
@@ -162,7 +162,7 @@ export function DatasetFilterPanel({
                         type="button"
                         size="sm"
                         variant="outline"
-                        className="h-8 rounded-full border-slate-700 text-xs text-slate-200 hover:bg-slate-900"
+                        className="h-8 rounded-full border-border text-xs text-primary-foreground hover:bg-primary"
                         onClick={clearFilters}
                     >
                         Clear

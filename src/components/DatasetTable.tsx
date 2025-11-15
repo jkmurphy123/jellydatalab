@@ -27,20 +27,20 @@ function toHeaderLabel(key: string) {
 export function DatasetTable({ dataKeys, records }: DatasetTableProps) {
     if (records.length === 0) {
         return (
-            <p className="text-sm text-slate-400">
+            <p className="text-sm text-foreground">
                 No records to display with the current filters.
             </p>
         );
     }
 
     return (
-        <div className="overflow-x-auto rounded-xl bg-slate-900/80 ring-1 ring-slate-800">
+        <div className="overflow-x-auto rounded-xl bg-card ring-1 ring-border">
             <Table className="min-w-full text-xs">
                 <TableHeader>
-                    <TableRow className="border-slate-800 bg-slate-900/80">
-                        <TableHead className="px-3 py-2 text-slate-300">ID</TableHead>
+                    <TableRow className="border-border bg-muted/60">
+                        <TableHead className="px-3 py-2 text-foreground">ID</TableHead>
                         {dataKeys.map((key) => (
-                            <TableHead key={key} className="px-3 py-2 text-slate-300">
+                            <TableHead key={key} className="px-3 py-2 text-foreground">
                                 {toHeaderLabel(key)}
                             </TableHead>
                         ))}
@@ -50,9 +50,9 @@ export function DatasetTable({ dataKeys, records }: DatasetTableProps) {
                     {records.map((rec) => (
                         <TableRow
                             key={rec.id}
-                            className="border-slate-800 hover:bg-slate-900"
+                            className="border-border bg-muted/60"
                         >
-                            <TableCell className="px-3 py-2 text-slate-400">
+                            <TableCell className="px-3 py-2 text-foreground">
                                 {rec.id}
                             </TableCell>
                             {dataKeys.map((key) => (
