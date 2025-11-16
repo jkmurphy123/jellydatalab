@@ -44,11 +44,14 @@
 }
 
 :root {
-  /* Light mode (if you ever enable it) */
+  /* Light mode */
   --background: 210 40% 98%;
+  /* soft light gray */
   --foreground: 222 47% 11%;
+  /* dark navy text */
 
-  --card: 0 0% 100%;
+  --card: 210 40% 96%;
+  /* slightly off-white for contrast */
   --card-foreground: 222 47% 11%;
 
   --popover: 0 0% 100%;
@@ -56,16 +59,20 @@
 
   /* Jelly teal as primary */
   --primary: 160 84% 45%;
-  /* ~ #22c55e / bright jelly green */
-  --primary-foreground: 210 40% 98%;
+  /* bright jelly green/teal */
+  --primary-foreground: 222 47% 11%;
+  /* deep navy text */
+
 
   /* Soft cyan/teal secondary */
   --secondary: 190 95% 65%;
   /* aqua highlight */
   --secondary-foreground: 222 47% 11%;
 
-  --muted: 210 40% 96%;
-  --muted-foreground: 215 16% 35%;
+  --muted: 210 20% 94%;
+  /* light gray for muted backgrounds */
+  --muted-foreground: 220 15% 20%;
+  /* DARKER secondary text for readability */
 
   --accent: 190 95% 65%;
   --accent-foreground: 222 47% 11%;
@@ -73,8 +80,8 @@
   --destructive: 0 84% 60%;
   --destructive-foreground: 210 40% 98%;
 
-  --border: 215 20% 90%;
-  --input: 215 20% 90%;
+  --border: 215 18% 85%;
+  --input: 215 18% 85%;
   --ring: 160 84% 45%;
 
   --radius: 0.75rem;
@@ -102,7 +109,9 @@
   --secondary-foreground: 222 47% 10%;
 
   --muted: 222 20% 12%;
+  /* dark muted panels */
   --muted-foreground: 215 15% 70%;
+  /* soft gray text on dark background */
 
   --accent: 190 95% 65%;
   --accent-foreground: 222 47% 10%;
