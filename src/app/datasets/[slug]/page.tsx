@@ -1,10 +1,13 @@
 // src/app/datasets/[slug]/page.tsx
 import { notFound } from 'next/navigation';
 import { getDatasetBySlug, getRecordsForDataset } from '@/lib/datasets';
-import { DatasetGridPage } from '@/components/DatasetGridPage'; // your existing generic layout
+import { DatasetGridPage } from '@/components/DatasetGridPage';
 import { SalaryFilterPanel } from '@/components/SalaryFilterPanel';
 import { SalaryAnalysis } from '@/components/SalaryAnalysis';
 import { DynamicDataGrid } from '@/components/DynamicDataGrid';
+
+import { getDatasetConfig } from '@/config/datasets';
+import { RemoteDatasetGrid } from '@/components/RemoteDatasetGrid';
 
 type RouteParams = {
     slug: string;
@@ -26,21 +29,74 @@ export default async function DatasetDetailPage({
     const { slug } = await params;
     const search = await searchParams;
 
+    // 1️⃣ NEW: check DatasetConfig first
+    const config = getDatasetConfig(slug);
+
+    // If this dataset is declared as API-backed, use the new API flow
+    if (config && config.sourceType === 'api') {
+        // Turn searchParams into a query string we can pass to RemoteDatasetGrid
+        const qs = new URLSearchParams();
+        Object.entries(search).forEach(([key, value]) => {
+            if (typeof value === 'string') qs.set(key, value);
+        });
+
+        return (
+            <div className="space-y-6">
+                <div className="space-y-2">
+                    <p className="text-xs text-muted-foreground">
+                        <a href="/datasets" className="hover:text-primary">
+                            ← Back to datasets
+                        </a>
+                    </p>
+                    <h1 className="text-2xl font-bold text-foreground">
+                        {config.title}
+                    </h1>
+                    {config.description && (
+                        <p className="text-sm text-muted-foreground">
+                            {config.description}
+                        </p>
+                    )}
+                </div>
+
+                {/* TODO: later, auto-generate filters from config.columns[*].filter */}
+
+                <RemoteDatasetGrid slug={slug} queryString={qs.toString()} />
+            </div>
+        );
+    }
+
+    // 2️⃣ Existing: load dataset metadata from DB (for local datasets)
     const dataset = await getDatasetBySlug(slug);
     if (!dataset) {
         notFound();
     }
 
-    // Special-case: salary dataset
+    // 3️⃣ Existing: special case for salary dataset
     if (slug === 'salary-2024') {
-        return await renderSalaryDataset(dataset.id, slug, search, dataset.title, dataset.description, dataset.sourceUrl ?? undefined);
+        return await renderSalaryDataset(
+            dataset.id,
+            slug,
+            search,
+            dataset.title,
+            dataset.description,
+            dataset.sourceUrl ?? undefined,
+        );
     }
 
-    // Fallback: generic layout for other datasets
-    return await renderGenericDataset(dataset.id, slug, search, dataset.title, dataset.description, dataset.sourceUrl ?? undefined);
+    // 4️⃣ Existing: generic renderer for all other local datasets
+    return await renderGenericDataset(
+        dataset.id,
+        slug,
+        search,
+        dataset.title,
+        dataset.description,
+        dataset.sourceUrl ?? undefined,
+    );
 }
 
-// ---------- Salary-specific renderer ----------
+// ─────────────────────────────────────────────
+// EXISTING salary-specific renderer (keep this)
+// ─────────────────────────────────────────────
 
 async function renderSalaryDataset(
     datasetId: number,
@@ -93,7 +149,6 @@ async function renderSalaryDataset(
         ...(rec.data as any),
     }));
 
-    // Distinct filter values
     const yearSet = new Set<number>();
     const expSet = new Set<string>();
     const sizeSet = new Set<string>();
@@ -118,7 +173,6 @@ async function renderSalaryDataset(
         a.localeCompare(b),
     );
 
-    // Apply filters
     let filtered = allRecords;
 
     if (selectedYear != null && !Number.isNaN(selectedYear)) {
@@ -159,20 +213,29 @@ async function renderSalaryDataset(
         });
     }
 
-    // Flat rows for grid
     const flatRows = filtered.map((row) => row);
 
     const sample = flatRows[0] as Record<string, unknown> | undefined;
-    const dataKeys = sample
-        ? Object.keys(sample).filter((k) => k !== 'id')
-        : [];
+
+    // 🔹 Try to use DatasetConfig first
+    const config = getDatasetConfig(slug);
+
+    const dataKeys = config
+        ? config.columns
+            .filter((c) => c.visible !== false && c.field !== 'id')
+            .map((c) => c.field)
+        : (() => {
+            // Fallback to old behavior if config missing for some reason
+            const sample = flatRows[0] as Record<string, unknown> | undefined;
+            return sample
+                ? Object.keys(sample).filter((k) => k !== 'id')
+                : [];
+        })();
 
     return (
         <div className="space-y-6">
-            {/* Header */}
             <div className="space-y-2">
                 <p className="text-xs text-muted-foreground">
-                    {/* back link is inside DatasetGridPage in generic case, but here we inline it */}
                     <a href="/datasets" className="hover:text-primary">
                         ← Back to datasets
                     </a>
@@ -196,7 +259,6 @@ async function renderSalaryDataset(
                 )}
             </div>
 
-            {/* Filters */}
             <SalaryFilterPanel
                 slug={slug}
                 years={years}
@@ -204,10 +266,8 @@ async function renderSalaryDataset(
                 companySizes={companySizes}
             />
 
-            {/* Analysis widgets */}
             <SalaryAnalysis rows={flatRows as any} />
 
-            {/* Data grid */}
             <section className="space-y-3">
                 <h2 className="text-sm font-semibold text-foreground">
                     Records ({flatRows.length})
@@ -218,28 +278,24 @@ async function renderSalaryDataset(
     );
 }
 
-// ---------- Generic renderer for all other datasets ----------
+// ─────────────────────────────────────────────
+// EXISTING generic renderer (keep this too)
+// ─────────────────────────────────────────────
 
 async function renderGenericDataset(
     datasetId: number,
     slug: string,
-    search: SearchParams,
+    _search: SearchParams,
     title: string,
     description?: string | null,
     sourceUrl?: string,
 ) {
-    // You can reuse your previous generic logic here;
-    // simplest version: ignore searchParams for now and just re-use DatasetGridPage.
-
     const allRecordsRaw = await getRecordsForDataset(datasetId, 2000);
 
     const allRecords = allRecordsRaw.map((rec) => ({
         id: rec.id,
         ...(rec.data as any),
     }));
-
-    // If your generic page uses year/state, you can compute those here;
-    // for now we'll just pass empty arrays so it still renders.
 
     const years: number[] = [];
     const states: string[] = [];
