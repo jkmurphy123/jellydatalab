@@ -1,0 +1,31 @@
+Here are the basic steps to add a new dataset to the application:
+
+1) Put the CSV into your data folder
+2) Create a new import script for this dataset
+
+Because the CSV has a header row, csv() will give you objects like:
+
+{ 
+  "EmployeeID": "123",
+  "Department": "Engineering",
+  "BaseSalary": "95000",
+  "Bonus": "5000"
+}
+
+
+We take that entire object and store it in Record.data as JSON.
+
+Your existing grid (DynamicDataGrid + DatasetGridPage) will automatically turn those keys into columns.
+
+
+3) Run the import script
+
+node scripts/import/import_salary_2024.cjs
+
+4) View it in JellyDataLab
+
+5) Customize
+
+Tweak the impor script to map column names
+Create a custom filter for the page 
+Update slug page to point to new dataset
